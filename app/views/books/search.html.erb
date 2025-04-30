@@ -1,0 +1,55 @@
+<% if @search_title.present? %>
+    <h1 class="text-3xl font-semibold text-center mt-8 mb-6 text-gray-900">
+        Results for "<span class="italic text-green-asparagus"><%= @search_title.titleize %></span>"
+    </h1>
+
+    <% if @books.any? %>
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <% @books.each do |book| %>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow flex flex-col h-full">
+                        <% if book['cover_i'] %>
+                            <img src="https://covers.openlibrary.org/b/id/<%= book['cover_i'] %>-M.jpg" alt="<%= book['title'] %>" class="w-full h-64 object-cover transition-transform transform hover:scale-105">
+                        <% else %>
+                            <div class="w-full h-64 bg-gray-300 flex items-center justify-center text-white text-lg">No Image</div>
+                        <% end %>
+
+                        <div class="flex flex-col p-6 flex-grow">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2"><%= book['title'] %></h3>
+                            <p class="text-sm text-gray-600 mb-4"><%= book['author_name']&.join(', ') || "Unknown" %></p>
+                            <p class="text-sm text-gray-500 mb-4">First Published: <%= book['first_publish_year'] %></p>
+
+                            <% if current_user %>
+                                <% book_id = book['key'] %>
+                                <div class="mt-auto flex justify-end space-x-4">
+                                    <% if !current_user.likes.exists?(book: book_id) %>
+                                        <%= button_to 'Like', likes_path, params: { like: {book: book_id}}, method: :post, class: 'px-6 py-1.5 border-2 border-sage-green rounded-md hover:bg-sage-green-darken hover:text-white transition-colors focus:outline-none cursor-pointer' %>
+                                    <% end %>
+                                    <% if !current_user.read_books.exists?(book_id: book_id) %>
+                                    <%= button_to 'Mark read', read_books_path, params: { read_book: {book_id: book_id}}, method: :post, class: 'px-6 py-2 bg-sage-green text-white rounded-md hover:bg-sage-green-darken transition-colors focus:outline-none cursor-pointer' %>
+                                    <% end %>
+                                </div>
+                            <% end %>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+
+        <div class="flex justify-center items-center space-x-2 mt-6 mb-8  font-bold">
+            <% if @page > 1 %>
+                <%= link_to '<', books_search_path(title: @search_title, page: @page - 1), class: "px-4 py-2 text-white bg-sage-green hover:bg-sage-green-darken rounded" %>
+            <% end %>
+
+                <span class="text-sm text-green-asparagus">Page <%= @page %> of <%= @total_pages %></span>
+
+            <% if @page < @total_pages %>
+                <%= link_to '>', books_search_path(title: @search_title, page: @page + 1), class: "px-4 py-2 text-white bg-sage-green hover:bg-sage-green-darken rounded" %>
+            <% end %>
+        </div>
+    <% else %>
+        <p>No books found.</p>
+    <% end %>
+<% else %>
+    <p>Please enter a book title</p>
+<% end %>

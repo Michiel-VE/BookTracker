@@ -1,0 +1,16 @@
+<div class="bg-white rounded-lg shadow-md p-4 mb-6 h-48 flex flex-col">
+<h2 class="text-lg font-semibold text-green-asparagus mb-2 flex-shrink-0"><%= title.titleize %></h2>
+<% if books.any? %>
+    <ul class="space-y-2 overflow-y-auto flex-grow">
+      <% books.each do |book| %>
+        <li class="flex justify-between items-center text-gray-800 text-sm border-b pb-1 last:border-b-0">
+          <span class="truncate max-w-[80%]"><%= book[:title] %></span>
+          <%= link_to 'View', "https://openlibrary.org#{book[:key]}", class: "text-sm text-blue-500 hover:underline", target: "_blank" %>
+        </li>
+      <% end %>
+    </ul>
+    <% else %>
+        <p class="text-gray-500 italic text-sm mb-4">No <%= title %> yet.</p>
+    <% end %>
+</div>
+

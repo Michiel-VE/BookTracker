@@ -1,0 +1,11 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-center mb-6 text-green-asparagus">Your Liked Books</h1>
+
+  <% if @liked_books.any? %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <%= render partial: "shared/list_books", collection: @liked_books, as: :book, locals: { show_remove_button: true } %>
+    </div>
+  <% else %>
+    <p class="text-center text-gray-500 mt-6">You haven't liked any books yet.</p>
+  <% end %>
+</div>
